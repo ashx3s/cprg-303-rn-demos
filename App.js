@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Image, Button } from "react-native";
 
 export default function App() {
   return (
@@ -9,6 +9,10 @@ export default function App() {
         <Text style={styles.screenSubtitle}>
           React Native is a lot like React, but with some extra specifics.
         </Text>
+        <Image
+          source={require("./assets/splash-icon.png")}
+          style={styles.imageStyle}
+        />
         {/* Different from html: a RN button takes a title prop for the visible text, and for "clicking" you use onPress. the function syntax is important because it makes it run on click and not on render */}
         <Button
           onPress={() => console.log("Message in console")}
@@ -52,6 +56,10 @@ const styles = StyleSheet.create({
   screenSubtitle: {
     fontSize: 18,
     color: "#5c5f77",
+  },
+  imageStyle: {
+    height: 100,
+    width: 100,
   },
   boxLayout: {
     backgroundColor: "#ccd0da",
