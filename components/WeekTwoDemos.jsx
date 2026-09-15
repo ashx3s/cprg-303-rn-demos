@@ -9,7 +9,7 @@ export function PageHeader() {
           React Native is a lot like React, but with some extra specifics.
         </Text>
         <Image
-          source={require("./assets/splash-icon.png")}
+          source={require("../assets/splash-icon.png")}
           style={styles.imageStyle}
         />
 

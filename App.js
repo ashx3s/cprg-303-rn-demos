@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { View, Text, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { PageHeader, FlexDemo } from "./components/WeekTwoDemos";
 import { TodoList } from "./components/TodoList";
