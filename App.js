@@ -1,14 +1,15 @@
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
-
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { PageHeader, FlexDemo } from "./components/WeekTwoDemos";
 
 export default function App() {
   return (
-    <View>
-      <PageHeader />
-      <FlexDemo />
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView>
+        <PageHeader />
+        <FlexDemo />
+        <StatusBar style="auto" />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

@@ -18,6 +18,9 @@ This repo contains demo code for each week.
   - add safe area stuff
   - add scrollable
   - card component with props
+  - **SafeAreaView Depreciation** Recommended to install and use [react-native-safe-area-context](https://appandflow.github.io/react-native-safe-area-context/)
+    - expo install: `npx expo install react-native-safe-area-context`
+    - [expo docs](https://docs.expo.dev/versions/latest/sdk/safe-area-context/)
 
 ## Attributions
 

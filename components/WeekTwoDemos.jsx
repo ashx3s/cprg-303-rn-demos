@@ -12,7 +12,7 @@ export function PageHeader() {
           source={require("./assets/splash-icon.png")}
           style={styles.imageStyle}
         />
-        {/* Different from html: a RN button takes a title prop for the visible text, and for "clicking" you use onPress. the function syntax is important because it makes it run on click and not on render */}
+
         <Button
           onPress={() => console.log("Message in console")}
           title="Click me"
