@@ -3,6 +3,7 @@ import { ScrollView } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { PageHeader, FlexDemo } from "./components/WeekTwoDemos";
 import { TodoList } from "./components/TodoList";
+import { PressableDemo } from "./components/PressableDemo";
 const todoItems = [
   {
     id: 0,
@@ -29,6 +30,7 @@ export default function App() {
           <PageHeader />
           <FlexDemo />
           <TodoList list={todoItems} />
+          <PressableDemo />
         </ScrollView>
         <StatusBar style="auto" />
       </SafeAreaView>
