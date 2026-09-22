@@ -1,4 +1,4 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, View, Text, StyleSheet } from "react-native";
 
 export function PressableDemo() {
   const onLogMsg = () => console.log("on press on second button");
@@ -6,7 +6,7 @@ export function PressableDemo() {
   const onOpenMenu = () => console.log("A long press!");
 
   return (
-    <>
+    <View style={styles.buttonContainer}>
       <Pressable
         style={styles.button}
         onPress={() => console.log("A simple Press")}
@@ -20,7 +20,7 @@ export function PressableDemo() {
       >
         <Text style={styles.text}>This button has 2 actions</Text>
       </Pressable>
-    </>
+    </View>
   );
 }
 
@@ -29,11 +29,17 @@ export function PressableDemo() {
 // SCREAMING_SNAKE_CASE is used for constants (optional)
 // kebab-case is basically ignored
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 14,
+  },
   button: {
     backgroundColor: "#0f172a",
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 8,
+    width: "fit-content",
   },
   text: { color: "white", fontWeight: "600", textAlign: "center" },
 });
