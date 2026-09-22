@@ -1,6 +1,6 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 
-export function Pressable() {
+export function PressableDemo() {
   const onLogMsg = () => console.log("on press on second button");
 
   const onOpenMenu = () => console.log("A long press!");
