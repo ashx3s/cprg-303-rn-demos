@@ -15,7 +15,7 @@ export function PressableDemo() {
       </Pressable>
       <Pressable
         style={styles.button}
-        onPressOut={onLogMsg}
+        onPress={onLogMsg}
         onLongPress={onOpenMenu}
       >
         <Text style={styles.text}>This button has 2 actions</Text>
