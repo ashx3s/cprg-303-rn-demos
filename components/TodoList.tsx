@@ -5,8 +5,10 @@ interface Todo {
   title: string;
   description: string;
 }
-
-export function TodoList({ list }) {
+interface TodoList {
+  list: Todo[];
+}
+export function TodoList({ list }: TodoList) {
   return (
     <View style={styles.listContainer}>
       <Text style={styles.listTitle}>List Title</Text>
