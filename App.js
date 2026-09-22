@@ -5,13 +5,14 @@ import { PageHeader, FlexDemo } from "./components/WeekTwoDemos";
 import { TodoList } from "./components/TodoList";
 import { PressableDemo } from "./components/PressableDemo";
 import { todoItems } from "./assets/demo-data/todoItems";
-
+import { StateDemo } from "./components/StateDemo";
 export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView>
         <ScrollView>
           <PageHeader />
+          <StateDemo />
           <FlexDemo />
           <TodoList list={todoItems} />
           <PressableDemo />

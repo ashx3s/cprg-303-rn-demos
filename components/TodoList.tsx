@@ -1,17 +1,23 @@
 import { View, Text, StyleSheet } from "react-native";
 
+interface Todo {
+  id: number;
+  title: string;
+  description: string;
+}
+
 export function TodoList({ list }) {
   return (
     <View style={styles.listContainer}>
       <Text style={styles.listTitle}>List Title</Text>
-      {list.map((todo) => {
+      {list.map((todo: Todo) => {
         return <Todo key={todo.id} {...todo} />;
       })}
     </View>
   );
 }
 
-function Todo({ title, description }) {
+function Todo({ title, description }: Todo) {
   return (
     <View style={styles.container}>
       <Text style={styles.todoTitle}>{title}</Text>
