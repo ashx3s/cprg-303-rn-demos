@@ -22,6 +22,12 @@ This repo contains demo code for each week.
     - expo install: `npx expo install react-native-safe-area-context`
     - [expo docs](https://docs.expo.dev/versions/latest/sdk/safe-area-context/)
 
+## Week 3
+
+- Pressable
+- Components: import/export props
+- onPress events
+
 ## Attributions
 
 - [Colours from Catpuccin Theme](https://catppuccin.com/palette/)
