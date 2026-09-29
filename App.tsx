@@ -1,24 +1,32 @@
 import { StatusBar } from "expo-status-bar";
-import { ScrollView } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { PageHeader, FlexDemo } from "./components/WeekTwoDemos";
-import { TodoList } from "./components/TodoList";
+import { TodoDemo } from "./components/TodoDemo";
 import { PressableDemo } from "./components/PressableDemo";
-import { todoItems } from "./assets/demo-data/todoItems";
 import { StateDemo } from "./components/StateDemo";
+
 export default function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView>
-        <ScrollView>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+        >
           <PageHeader />
           <StateDemo />
           <FlexDemo />
-          <TodoList list={todoItems} />
+          <TodoDemo />
           <PressableDemo />
         </ScrollView>
-        <StatusBar style="auto" />
       </SafeAreaView>
+      <StatusBar style="auto" />
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: { flex: 1 },
+  content: { paddingBottom: 24 },
+});
