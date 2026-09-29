@@ -1,36 +1,39 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 
-interface Todo {
+export interface TodoItem {
   id: number;
   title: string;
-  description: string;
+  description?: string;
 }
-interface TodoList {
-  list: Todo[];
+
+interface TodoListProps {
+  list: TodoItem[];
 }
-export function TodoList({ list }: TodoList) {
+
+export function TodoList({ list }: TodoListProps) {
   return (
-    <View style={styles.listContainer}>
-      <Text style={styles.listTitle}>List Title</Text>
-      {list.map((todo: Todo) => {
-        return <Todo key={todo.id} {...todo} />;
-      })}
-    </View>
+    <FlatList
+      data={list}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => <Todo {...item} />}
+      ListHeaderComponent={<Text style={styles.listTitle}>List Title</Text>}
+      ListEmptyComponent={<Text>Nothing to do yet.</Text>}
+      contentContainerStyle={styles.listContainer}
+    />
   );
 }
 
-function Todo({ title, description }: Todo) {
+function Todo({ title, description }: TodoItem) {
   return (
     <View style={styles.container}>
       <Text style={styles.todoTitle}>{title}</Text>
-      <Text>{description}</Text>
+      {description ? <Text>{description}</Text> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     marginVertical: 10,
     padding: 10,
   },

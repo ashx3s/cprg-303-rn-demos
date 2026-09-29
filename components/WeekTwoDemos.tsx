@@ -3,19 +3,16 @@ import { StyleSheet, Text, View, Image, Button } from "react-native";
 export function PageHeader() {
   return (
     <View style={styles.container}>
-      <View>
-        <Image
-          source={require("../assets/splash-icon.png")}
-          style={styles.imageStyle}
-        />
-      </View>
+      <Image
+        source={require("../assets/splash-icon.png")}
+        style={styles.imageStyle}
+      />
       <View style={styles.screenHeader}>
         <Text style={styles.screenTitle}>Hello World!</Text>
         <Text style={styles.screenSubtitle}>
           React Native is a lot like React, but there's no DOM and thus no HTML
           or CSS.
         </Text>
-
         <Button
           onPress={() => console.log("Message in console")}
           title="Click me"
@@ -40,20 +37,20 @@ export function FlexDemo() {
     </>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
     paddingHorizontal: 40,
     backgroundColor: "#eff1f5",
-    alignItems: "end",
-    // justifyContent: "center",
+    alignItems: "flex-end",
   },
   screenHeader: {
+    flex: 1,
     paddingVertical: 20,
     marginTop: 60,
     gap: 12,
-    maxWidth: "85%",
   },
   screenTitle: {
     fontSize: 32,
@@ -72,14 +69,13 @@ const styles = StyleSheet.create({
   boxLayout: {
     backgroundColor: "#ccd0da",
     flex: 1,
-    // default flex direction is 1 area where CSS and RN styles differ
+    // React Native's default flexDirection is "column"; CSS's is "row".
+    // This is one area where CSS and RN styles differ.
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
     padding: 20,
-    width: "100%",
-    height: 100,
   },
   box: {
     backgroundColor: "#e64553",
