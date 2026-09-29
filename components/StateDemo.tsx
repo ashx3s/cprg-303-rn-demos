@@ -65,9 +65,19 @@ export function StateDemo() {
 
 const styles = StyleSheet.create({
   container: { padding: 20 },
-  heading: { fontSize: 24, fontWeight: "bold", marginBottom: 16 },
-  section: { marginBottom: 24, gap: 8 },
-  sectionTitle: { fontSize: 18, fontWeight: "600" },
+  heading: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  section: {
+    marginBottom: 24,
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#999",
@@ -83,10 +93,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#999",
   },
-  darkBox: { backgroundColor: "black" },
-  lightBox: { backgroundColor: "white" },
-  darkText: { color: "white" },
-  lightText: { color: "black" },
+  darkBox: {
+    backgroundColor: "black",
+  },
+  lightBox: {
+    backgroundColor: "white",
+  },
+  darkText: {
+    color: "white",
+  },
+  lightText: {
+    color: "black",
+  },
   button: {
     backgroundColor: "blue",
     borderRadius: 6,
@@ -95,5 +113,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "flex-start",
   },
-  buttonText: { color: "white" },
+  buttonText: {
+    color: "white",
+  },
 });
