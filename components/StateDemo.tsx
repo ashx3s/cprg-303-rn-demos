@@ -20,7 +20,7 @@ export function StateDemo() {
           onPress={() => setIsDarkMode(!isDarkMode)}
           style={styles.buttonStyles}
         >
-          Toggle Button Colour
+          <Text>Toggle Button Colour</Text>
         </Pressable>
       </View>
     </View>
