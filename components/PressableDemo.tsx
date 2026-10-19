@@ -69,5 +69,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 8,
   },
-  text: { color: "white", fontWeight: "600", textAlign: "center" },
+  text: {
+    color: "white",
+    fontWeight: "600",
+    textAlign: "center",
+  },
 });
