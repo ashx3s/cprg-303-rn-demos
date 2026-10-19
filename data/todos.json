@@ -1,0 +1,27 @@
+[
+  {
+    "id": 0,
+    "title": "Set up project structure",
+    "description": "Create folders for HTML, CSS, and assets"
+  },
+  {
+    "id": 1,
+    "title": "Create main HTML file",
+    "description": "Set up the basic structure with header, main content, and footer"
+  },
+  {
+    "id": 2,
+    "title": "Add CSS styling",
+    "description": "Style the website with CSS to make it visually appealing"
+  },
+  {
+    "id": 3,
+    "title": "Implement responsive design",
+    "description": "Ensure the website works well on different screen sizes"
+  },
+  {
+    "id": 4,
+    "title": "Test cross-browser compatibility",
+    "description": "Verify the website works in Chrome, Firefox, Safari, and Edge"
+  }
+]
