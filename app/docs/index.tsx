@@ -1,5 +1,5 @@
-import { FlatList, Pressable, Text, View, StyleSheet } from "react-native";
-import { Link } from "expo-router";
+import { FlatList, Pressable, Text, View, StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
 
 const docs = [
   {

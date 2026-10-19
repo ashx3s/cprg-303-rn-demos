@@ -2,27 +2,38 @@ import { useState } from "react";
 import { View, TextInput, Pressable, Text, StyleSheet } from "react-native";
 
 interface AddTodoProps {
-  onAdd: (title: string) => void;
+  onAdd: (title: string, description: string) => void;
 }
 
 export function AddTodo({ onAdd }: AddTodoProps) {
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   function handleSubmit() {
-    const trimmed = title.trim();
-    if (!trimmed) return;
-    onAdd(trimmed);
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+    if (!trimmedTitle) return;
+    onAdd(trimmedTitle, trimmedDescription);
     setTitle("");
+    setDescription("");
   }
 
   return (
-    <View style={styles.row}>
+    <View style={styles.container}>
+      <Text style={styles.actionTitle}>Add Todo</Text>
       <TextInput
         style={styles.input}
         value={title}
         onChangeText={setTitle}
+        placeholder="Title"
+        returnKeyType="next"
+      />
+      <TextInput
+        style={styles.input}
+        value={description}
+        onChangeText={setDescription}
         onSubmitEditing={handleSubmit}
-        placeholder="New todo"
+        placeholder="Description"
         returnKeyType="done"
       />
       <Pressable style={styles.button} onPress={handleSubmit}>
@@ -33,11 +44,17 @@ export function AddTodo({ onAdd }: AddTodoProps) {
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
+  container: {
+    flexDirection: "column",
     gap: 8,
     marginHorizontal: 20,
     marginTop: 20,
+  },
+  actionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
   },
   input: {
     flex: 1,
@@ -52,6 +69,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 16,
     justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
   },
   buttonText: {
     color: "white",
