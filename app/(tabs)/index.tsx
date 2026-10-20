@@ -10,7 +10,7 @@ export default function LandingPage() {
   function handleSignIn() {
     // In a real app, you would verify the credentials here
     // For this demo, we'll just navigate to the home screen
-    router.replace("/home");
+    router.replace("/");
   }
 
   function handleSignUp() {
