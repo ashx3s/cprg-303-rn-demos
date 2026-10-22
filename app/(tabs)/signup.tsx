@@ -1,7 +1,19 @@
-import { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useState } from "react";
+import {
+  Text,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  ScrollView,
+  Platform,
+  Alert,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { Control, Controller, FieldPath, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
+// TODO REPLACE WITH ZOD SCHEMA
 interface FormData {
   firstName: string;
   lastName: string;
@@ -10,107 +22,96 @@ interface FormData {
   confirmPassword: string;
 }
 
+const signupSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.email("Enter a valid email address"),
+  password: z.string().min(8, "At least 8 characters"),
+  confirmPassword: z.string(),
+});
+
+type SignupFormData = z.infer<typeof signupSchema>;
+
+type FieldProps = {
+  control: Control<SignupFormData>;
+  name: FieldPath<SignupFormData>;
+  placeholder: string;
+  secure?: boolean;
+  email?: boolean;
+};
+
+function Field({ control, name, placeholder, secure, email }: FieldProps) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) => (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder={placeholder}
+            secureTextEntry={secure}
+            keyboardType={email ? "email-address" : "default"}
+            autoCapitalize={email ? "none" : "sentences"}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            value={value}
+          />
+          {error && <Text style={styles.errorText}>{error.message}</Text>}
+        </>
+      )}
+    />
+  );
+}
 export default function SignUpScreen() {
-  const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+  const { control, handleSubmit, reset } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    mode: "onSubmit",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
-  const [errors, setErrors] = useState<Partial<FormData>>({});
-  const router = useRouter();
 
-  function handleChange(name: keyof FormData, value: string) {
-    setFormData(prev => ({ ...prev, [name]: value }));
-  }
-
-  function validateForm() {
-    const newErrors: Partial<FormData> = {};
-
-    if (!formData.firstName) newErrors.firstName = 'First name is required';
-    if (!formData.lastName) newErrors.lastName = 'Last name is required';
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+  function onSubmit({ password, confirmPassword, ...safe }: SignupFormData) {
+    console.log("onSubmit fired", safe);
+    const msg = JSON.stringify(safe, null, 2);
+    if (Platform.OS === "web") {
+      window.alert(msg);
+    } else {
+      Alert.alert("Valid", msg);
     }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }
-
-  function handleSubmit() {
-    if (validateForm()) {
-      // In a real app, you would send the form data to your backend here
-      // For this demo, we'll just navigate to the home screen
-      router.replace('/home');
-    }
+    // reset form
+    reset();
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+    <ScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+    >
       <Text style={styles.title}>Create Account</Text>
-      <Text style={styles.subtitle}>Please fill in the form to create an account</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={formData.firstName}
-        onChangeText={(text) => handleChange('firstName', text)}
-      />
-      {errors.firstName && <Text style={styles.errorText}>{errors.firstName}</Text>}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={formData.lastName}
-        onChangeText={(text) => handleChange('lastName', text)}
-      />
-      {errors.lastName && <Text style={styles.errorText}>{errors.lastName}</Text>}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={formData.email}
-        onChangeText={(text) => handleChange('email', text)}
-      />
-      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={formData.password}
-        onChangeText={(text) => handleChange('password', text)}
-      />
-      {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-
-      <TextInput
-        style={styles.input}
+      <Text style={styles.subtitle}>
+        Please fill in the form to create an account
+      </Text>
+      <Field control={control} name="firstName" placeholder="First Name" />
+      <Field control={control} name="lastName" placeholder="Last Name" />
+      <Field control={control} name="email" placeholder="Enter Email" email />
+      <Field control={control} name="password" placeholder="Password" secure />
+      <Field
+        control={control}
+        name="confirmPassword"
         placeholder="Confirm Password"
-        secureTextEntry
-        value={formData.confirmPassword}
-        onChangeText={(text) => handleChange('confirmPassword', text)}
+        secure
       />
-      {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
-
-      <Pressable style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </Pressable>
-
-      <Pressable onPress={() => router.back()} style={styles.backLink}>
-        <Text style={styles.backLinkText}>Already have an account? Sign In</Text>
+      <Pressable style={styles.button} onPress={handleSubmit(onSubmit)}>
+        <Text style={styles.buttonText}> Sign Up</Text>
       </Pressable>
     </ScrollView>
   );
@@ -119,54 +120,54 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    textAlign: 'center',
-    color: '#333',
+    textAlign: "center",
+    color: "#333",
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 30,
-    textAlign: 'center',
-    color: '#666',
+    textAlign: "center",
+    color: "#666",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 6,
     padding: 15,
     marginBottom: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginBottom: 10,
     marginLeft: 5,
   },
   button: {
-    backgroundColor: '#4CD964',
+    backgroundColor: "#4CD964",
     padding: 15,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   backLink: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   backLinkText: {
-    color: '#007AFF',
+    color: "#007AFF",
     fontSize: 16,
   },
 });
