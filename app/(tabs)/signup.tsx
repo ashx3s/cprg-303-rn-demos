@@ -1,27 +1,37 @@
-import { useState } from "react";
 import {
+  Alert,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
-  Pressable,
-  StyleSheet,
-  ScrollView,
   Platform,
-  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { Control, Controller, FieldPath, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-const signupSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.email("Enter a valid email address"),
-  password: z.string().min(8, "At least 8 characters"),
-  confirmPassword: z.string(),
-});
+const signupSchema = z
+  .object({
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    email: z.email("Enter a valid email"),
+    password: z.string().min(8, "At least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"], // attaches the error to this field
+  });
 
 type SignupFormData = z.infer<typeof signupSchema>;
+
+// What we actually persist: the form data minus the password fields
+type SavedFormData = Omit<SignupFormData, "password" | "confirmPassword">;
 
 type FieldProps = {
   control: Control<SignupFormData>;
@@ -46,7 +56,8 @@ function Field({ control, name, placeholder, secure, email }: FieldProps) {
             placeholder={placeholder}
             secureTextEntry={secure}
             keyboardType={email ? "email-address" : "default"}
-            autoCapitalize={email ? "none" : "sentences"}
+            autoCapitalize={email || secure ? "none" : "sentences"}
+            autoCorrect={!(email || secure)}
             onChangeText={onChange}
             onBlur={onBlur}
             value={value}
@@ -57,7 +68,13 @@ function Field({ control, name, placeholder, secure, email }: FieldProps) {
     />
   );
 }
+
 export default function SignUpScreen() {
+  const router = useRouter();
+  const [savedFormData, setSavedFormData] = useState<SavedFormData | null>(
+    null,
+  );
+  const [isLoading, setIsLoading] = useState(true);
   const { control, handleSubmit, reset } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     mode: "onSubmit",
@@ -70,7 +87,22 @@ export default function SignUpScreen() {
     },
   });
 
-  function onSubmit({ password, confirmPassword, ...safe }: SignupFormData) {
+  // Save form data to AsyncStorage
+  const saveFormData = async (data: SavedFormData) => {
+    try {
+      await AsyncStorage.setItem("signupFormData", JSON.stringify(data));
+      setSavedFormData(data);
+    } catch (error) {
+      console.error("Failed to save form data:", error);
+    }
+  };
+
+  // Strip the passwords out so we never display, log, or store them
+  const onSubmit = async ({
+    password,
+    confirmPassword,
+    ...safe
+  }: SignupFormData) => {
     console.log("onSubmit fired", safe);
     const msg = JSON.stringify(safe, null, 2);
     if (Platform.OS === "web") {
@@ -78,9 +110,28 @@ export default function SignUpScreen() {
     } else {
       Alert.alert("Valid", msg);
     }
-    // reset form
     reset();
-  }
+    await saveFormData(safe);
+  };
+
+  // Load form data from AsyncStorage
+  const loadFormData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("signupFormData");
+      if (value !== null) {
+        setSavedFormData(JSON.parse(value) as SavedFormData);
+      }
+    } catch (error) {
+      console.error("Failed to load form data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load data when the component mounts
+  useEffect(() => {
+    loadFormData();
+  }, []);
 
   return (
     <ScrollView
@@ -91,9 +142,10 @@ export default function SignUpScreen() {
       <Text style={styles.subtitle}>
         Please fill in the form to create an account
       </Text>
+
       <Field control={control} name="firstName" placeholder="First Name" />
       <Field control={control} name="lastName" placeholder="Last Name" />
-      <Field control={control} name="email" placeholder="Enter Email" email />
+      <Field control={control} name="email" placeholder="Email" email />
       <Field control={control} name="password" placeholder="Password" secure />
       <Field
         control={control}
@@ -101,9 +153,28 @@ export default function SignUpScreen() {
         placeholder="Confirm Password"
         secure
       />
+
       <Pressable style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.buttonText}> Sign Up</Text>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </Pressable>
+
+      <Pressable onPress={() => router.back()} style={styles.backLink}>
+        <Text style={styles.backLinkText}>
+          Already have an account? Sign In
+        </Text>
+      </Pressable>
+
+      {isLoading ? (
+        <ActivityIndicator size="large" style={styles.loadingIndicator} />
+      ) : savedFormData ? (
+        <>
+          <Text style={styles.savedDataText}>Saved Data:</Text>
+          <Text style={styles.savedData}>
+            Name: {savedFormData.firstName} {savedFormData.lastName}
+          </Text>
+          <Text style={styles.savedData}>Email: {savedFormData.email}</Text>
+        </>
+      ) : null}
     </ScrollView>
   );
 }
@@ -136,11 +207,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "white",
   },
-  errorText: {
-    color: "red",
-    marginBottom: 10,
-    marginLeft: 5,
-  },
+  errorText: { color: "red", marginBottom: 10, marginLeft: 5 },
   button: {
     backgroundColor: "#4CD964",
     padding: 15,
@@ -148,17 +215,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  backLink: {
-    marginTop: 10,
+  buttonText: { color: "white", fontSize: 18, fontWeight: "bold" },
+  backLink: { marginTop: 10, alignItems: "center" },
+  backLinkText: { color: "#007AFF", fontSize: 16 },
+  loadingIndicator: {
+    marginTop: 20,
     alignItems: "center",
   },
-  backLinkText: {
-    color: "#007AFF",
+  savedDataText: {
+    marginTop: 20,
     fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  savedData: {
+    marginTop: 5,
+    fontSize: 16,
+    textAlign: "center",
   },
 });
