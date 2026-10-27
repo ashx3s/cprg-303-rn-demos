@@ -28,8 +28,11 @@ This repo contains demo code for each week.
   - [useState](https://react.dev/reference/react/useState)
   - [TextInput](https://reactnative.dev/docs/textinput)
   - [Typescript Prop Definitions](https://react.dev/learn/typescript)
-- ## **Week 5**:
+- **Week 5**:
   - [expo nav installation](https://docs.expo.dev/router/installation/)
+- **Week 8**:
+  - [react hook form examples](https://react-hook-form.com/get-started)
+  - `app/(tabs)/signup.tsx`
 
 ## Attributions
 
